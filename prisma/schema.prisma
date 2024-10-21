@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -14,29 +10,29 @@ datasource db {
 }
 
 model User {
-  id       String  @id @map("_id")
+  id       String  @id @map("_id") @default(auto()) @db.ObjectId
   email    String  @unique
   name     String?
   password String
-  Order    Order[]
+  orders   Order[]  
 }
 
 model Dish {
-  id          String  @id @map("_id")
+  id          String  @id @map("_id") @default(auto()) @db.ObjectId
   name        String
   description String
   price       Float
   image       String
-  Order       Order[]
+  orders      Order[]  
 }
 
 model Order {
-  id        String   @id @map("_id")
+  id        String   @id @map("_id") @default(auto()) @db.ObjectId
   total     Float
   createdAt DateTime @default(now())
-  userId    String
-  User      User     @relation(fields: [userId], references: [id])
-  dishId    String
-  Dish      Dish     @relation(fields: [dishId], references: [id])
-  staus     Boolean
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  dishId    String   @db.ObjectId
+  dish      Dish     @relation(fields: [dishId], references: [id])
+  status    Boolean  
 }

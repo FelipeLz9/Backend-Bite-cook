@@ -1,5 +1,5 @@
-import { Router} from 'express';
-import { prisma} from '../db.js';
+import { Router } from 'express';
+import { prisma } from '../db.js';
 
 const router = Router();
 
@@ -19,14 +19,19 @@ router.get("/dishes/:id", async (req, res) => {
 });
 
 router.post("/dishes", async (req, res) => {
-    let { price, ...rest } = req.body;
-    if (typeof price === 'string') {
-        price = parseFloat(price);
+    try {
+        let { price, ...rest } = req.body;
+        if (typeof price === 'string') {
+            price = parseFloat(price);
+        }
+        await prisma.dish.create({
+            data: { price, ...rest }
+        });
+        res.status(201).json({ message: 'Dish created successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred while creating the dish' });
     }
-    await prisma.dish.create({
-        data: { price, ...rest }
-    });
-    res.status(201).json({ message: 'Dish created successfully' });
 });
 
 export default router;
