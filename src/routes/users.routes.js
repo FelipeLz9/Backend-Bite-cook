@@ -52,5 +52,38 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Register
+router.post("/register", async (req, res) => {
+  const { email, password, role } = req.body;
+
+  try {
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: 'El usuario ya existe' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        role: role || 'user',
+      },
+    });
+
+    const token = jwt.sign(
+      { userId: newUser.id, email: newUser.email, role: newUser.role },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.status(201).json({ token });
+  } catch (error) {
+    console.error('Error en registro:', error);
+    res.status(500).json({ message: 'Error al registrar el usuario' });
+  }
+});
+
 export { authenticateToken, authorizeAdmin };
 export default router;
