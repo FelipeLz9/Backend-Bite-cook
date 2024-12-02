@@ -16,7 +16,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: CORS_ORIGIN,
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -51,8 +51,8 @@ app.get("/api/protected-route", authenticateToken, (req, res) => {
 
 // Cargar certificados SSL
 const sslOptions = {
-  key: fs.readFileSync("./ssl/key.pem"),
-  cert: fs.readFileSync("./ssl/cert.pem"),
+  key: fs.readFileSync('/home/admin/ssl/privkey.pem'),
+  cert: fs.readFileSync('/home/admin/ssl/fullchain.pem'),
 };
 
 // Iniciar servidor HTTPS
