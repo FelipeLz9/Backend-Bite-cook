@@ -21,7 +21,7 @@ const authenticateToken = (req, res, next) => {
 
 // Middleware: Verificar si es ADMIN
 const authorizeAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {  // Asegúrate de que el rol sea 'admin'
+  if (req.user.role.toUpperCase() !== 'ADMIN') {
     return res.status(403).json({ message: 'Acceso denegado: No eres ADMIN.' });
   }
   next();
